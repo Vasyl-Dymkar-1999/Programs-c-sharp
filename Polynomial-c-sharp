@@ -1,0 +1,187 @@
+using System;
+
+namespace polynomial
+{
+    class Polynomial
+    {
+        private int power;
+        private int[] multipliers;
+
+        public Polynomial()
+        {
+            this.Power = 1;
+            this.multipliers = new int[2];
+            this[0] = 2;
+            this[1] = 1;
+        }
+
+        public Polynomial(int pow, int[] members)
+        {
+            if (members.Length < pow + 1)
+            {
+                throw new Exception("Too short array!");
+            }
+            else
+            {
+                this.Power = pow;
+                multipliers = new int[this.Power + 1];
+                for (int i = 0; i < this.Power + 1; ++i)
+                {
+                    this[i] = members[i];
+                }
+            }
+        }
+
+        public string Info()
+        {
+            return string.Format($"Your polynomial has power {this.Power}, with multipliers: {string.Join(", ", multipliers)}.");
+        }
+
+        public override string ToString()
+        {
+            string[] str = new string[this.Power + 1];
+            for (int i = this.Power, j = 0; j <= this.Power && i >= 0; --i, ++j)
+            {
+                if (i != 0)
+                {
+                    str[j] = $"{this[j]}x^{i}";
+                }
+                else
+                {
+                    str[j] = $"{this[j]}";
+                }
+            }
+            return string.Join("+", str);
+        }
+
+        public double calcForNumber(int value)
+        {
+            double res = 0;
+            int currPow = this.Power;
+            for (int i = 0; i < this.Power; ++i)
+            {
+                res += this[i] * Math.Pow(value, currPow);
+                currPow--;
+            }
+            res += this[this.Power];
+            return res;
+        }
+
+        public static Polynomial operator +(Polynomial p1, Polynomial p2)
+        {
+            if (p1.Power == p2.Power)
+            {
+                int[] curr = new int[p1.Power + 1];
+                for (int i = 0; i <= p1.Power; ++i)
+                {
+                    curr[i] = p1[i] + p2[i];
+                }
+                return new Polynomial(p1.Power, curr);
+            }
+            else
+            {
+                int[] curr = new int[Math.Max(p1.Power, p2.Power) + 1];
+                int i = Math.Max(p1.Power, p2.Power);
+                for (int j = Math.Min(p1.Power, p2.Power); j >= 0; --i, --j)
+                {
+                    if (p1.Power > p2.Power)
+                    {
+                        curr[i] = p1[i] + p2[j];
+                    }
+                    else
+                    {
+                        curr[i] = p1[j] + p2[i];
+                    }
+                }
+                while (i >= 0)
+                {
+                    if (p1.Power > p2.Power)
+                    {
+                        curr[i] = p1[i];
+                    }
+                    else
+                    {
+                        curr[i] = p2[i];
+                    }
+                    i--;
+                }
+                return new Polynomial(Math.Max(p1.Power, p2.Power), curr);
+            }
+        }
+
+        public static Polynomial operator -(Polynomial p1, Polynomial p2)
+        {
+            if (p1.Power == p2.Power)
+            {
+                int[] curr = new int[p1.Power + 1];
+                for (int i = 0; i <= p1.Power; ++i)
+                {
+                    curr[i] = p1[i] - p2[i];
+                }
+                return new Polynomial(p1.Power, curr);
+            }
+            else
+            {
+                int[] curr = new int[Math.Max(p1.Power, p2.Power) + 1];
+                int i = Math.Max(p1.Power, p2.Power);
+                for (int j = Math.Min(p1.Power, p2.Power); j >= 0; --i, --j)
+                {
+                    if (p1.Power > p2.Power)
+                    {
+                        curr[i] = p1[i] - p2[j];
+                    }
+                    else
+                    {
+                        curr[i] = p1[j] - p2[i];
+                    }
+                }
+                while (i >= 0)
+                {
+                    if (p1.Power > p2.Power)
+                    {
+                        curr[i] = p1[i];
+                    }
+                    else
+                    {
+                        curr[i] = -p2[i];
+                    }
+                    i--;
+                }
+                return new Polynomial(Math.Max(p1.Power, p2.Power), curr);
+            }
+        }
+
+        public static Polynomial operator *(Polynomial p1, Polynomial p2)
+        {
+            return new Polynomial();
+        }
+
+        public int Power
+        {
+            get { return this.power; }
+            private set { this.power = value; }
+        }
+        public int this[int index]
+        {
+            get { return this.multipliers[index]; }
+            private set { this.multipliers[index] = value; }
+        }
+    }
+    class MainClass
+    {
+        public static void Main(string[] args)
+        {
+            int[] m = new int[] { 3, 6, 1, 4, 8, 6 };
+            int[] n = new int[] { 1, 2 };
+            Polynomial a = new Polynomial(5, m);
+            Polynomial b = new Polynomial(1, n);
+            Polynomial c = a + b;
+            a.calcForNumber(1);
+            a.ToString();
+            Console.WriteLine(a.ToString() + "=0");
+            Console.WriteLine(" calcForNumber" + " "+a.calcForNumber(1));
+            Console.WriteLine(c.Info());
+            Console.Read();
+        }
+    }
+}
