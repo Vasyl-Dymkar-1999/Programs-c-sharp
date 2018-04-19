@@ -182,6 +182,16 @@ namespace polynomial
             Console.WriteLine(" calcForNumber" + " "+a.calcForNumber(1));
             Console.WriteLine(c.Info());
             Console.Read();
+            
+            Console.Write("Input size of your polynomial: ");
+            int mySize = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Input indexes of your polynomial: ");
+            int[] myPolynomialArray = new int[mySize];
+            for (int i = 0; i < mySize; i++) {
+                myPolynomialArray[i] = Convert.ToInt32(Console.Read());
+            }
+            Polynomial myPolinomial = new Polynomial(mySize, myPolynomialArray);
+            Console.WriteLine(myPolynomial);
         }
     }
 }
